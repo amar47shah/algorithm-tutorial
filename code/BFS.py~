@@ -2,7 +2,9 @@
 #
 # A breadth-first search on an undirected graph.
 
-from sage.all import *
+# By Amar Shah
+
+from sage import *
 
 def breadth_first_tree(G, s):
 
