@@ -1,0 +1,121 @@
+#import random
+#import operator
+#import sys
+#import unittest    
+
+from mod2 import Mod2
+
+class MatrixError(Exception):
+    """ An exception class for Matrix """
+    pass
+
+class SquareMatrix(object):
+    """ Python square mod2 matrix class with
+    basic operations and operator overloading """
+    
+    def __init__(self, n, init=True):
+        if init:
+            self.rows = [[Mod2(0) for c in range(n)] 
+                                  for r in range(n)]
+        else:
+            self.rows = []
+            
+        self.n = n
+        
+    def __getitem__(self, idx):
+        return self.rows[idx]
+
+    def __setitem__(self, idx, item):
+        self.rows[idx] = item
+        
+    def __str__(self):
+        s='\n'.join([' '.join([str(item) for item in row]) for row in self.rows])
+        return s + '\n'
+
+    def __repr__(self):
+        s=str(self.rows)
+        rank = str(self.getRank())
+        rep="Square Matrix: \"%s\", rank: \"%s\"" % (s,rank)
+        return rep
+                         
+    def getRank(self):
+        return self.n
+
+    def __eq__(self, mat):
+        """ Test equality """
+        return (mat.rows == self.rows)
+        
+    def __add__(self, mat):
+        """ Add this matrix to another matrix and return the result.
+        Don't modify this matrix."""
+        
+        if self.getRank() != mat.getRank():
+            raise MatrixError, "Adding matrices of different size."
+
+        result = Matrix(self.n)
+        
+        for x in range(self.n):
+            row = [sum(item) for item in zip(self.rows[x], mat[x])]
+            result[x] = row
+
+        return result
+
+    def __mul__(self, mat):
+        """NAIVE SQUARE MULTIPLICATION ALGORITHM:
+        
+        Multiply this matrix by another matrix and return the result.
+        Don't modify this matrix."""
+        
+        matn = mat.getRank()
+        
+        if (self.getRank() != matn):
+            raise MatrixError, "Multiplying matrices of different size.""
+        
+
+        return 
+        
+    def strallen(self, mat):
+        """STRALLEN MULTIPLICATION:
+        
+        Multiply this matrix by another matrix and return the result.
+        Don't modify this matrix."""
+
+        return        
+
+    @classmethod
+    def _makeMatrix(cls, rows):
+
+        n = len(rows)
+        # Validity check
+        if any([len(row) != n for row in rows]):
+            raise MatrixError, "Not a square matrix."
+        mat = SquareMatrix(n, init=False)
+        mat.rows = [[Mod2(e) for e in row] for row in rows]
+                    
+    @classmethod
+    def fromList(cls, listoflists):
+        """ Create a matrix by directly passing a list
+        of lists """
+
+        # E.g: Matrix.fromList([[1 2 3], [4,5,6], [7,8,9]])
+
+        rows = listoflists[:]
+        return cls._makeMatrix(rows)
+
+class MatrixTests(unittest.TestCase):
+
+    def testAdd(self):
+        m1 = Matrix.fromList([[1, 2, 3], [4, 5, 6]])
+        m2 = Matrix.fromList([[7, 8, 9], [10, 11, 12]])        
+        m3 = m1 + m2
+        self.assertTrue(m3 == Matrix.fromList([[8, 10, 12], [14,16,18]]))
+
+    def testMul(self):
+        m1 = Matrix.fromList([[1, 2, 3], [4, 5, 6]])
+        m2 = Matrix.fromList([[7, 8], [10, 11], [12, 13]])
+        self.assertTrue(m1 * m2 == Matrix.fromList([[63, 69], [150, 165]]))
+        self.assertTrue(m2*m1 == Matrix.fromList([[39, 54, 69], [54, 75, 96], [64, 89, 114]]))
+
+
+if __name__ == "__main__":
+    unittest.main()
